@@ -1,0 +1,10 @@
+[package]
+name = "discrete-event-systems-test/contract-conformance-tests"
+version = "0.1.0"
+type = "test-suite"
+
+[develop]
+commands = [
+  "PYTHONPATH=src python -m unittest discover -s tests -v",
+  "python scripts/verify_repository.py"
+]

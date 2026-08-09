@@ -1,0 +1,11 @@
+[project]
+name = "discrete-event-systems-test-contract-conformance-tests"
+version = "0.1.0"
+description = "Deterministic state-model, idempotency, serialization, and protocol contract conformance tests."
+requires-python = ">=3.11"
+dependencies = []
+
+[tool.deep-tests]
+suite = "contract"
+deterministic = true
+network_default = "disabled"
