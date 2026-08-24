@@ -1,10 +1,23 @@
 [package]
-name = "discrete-event-systems-test/contract-conformance-tests"
+org = "discrete-event-systems-test"
+name = "contract-conformance-tests"
 version = "0.1.0"
-type = "test-suite"
+description = "Deterministic state-model, idempotency, serialization, and protocol contract conformance tests."
+license = "MIT"
+language = "python"
 
-[develop]
-commands = [
-  "PYTHONPATH=src python -m unittest discover -s tests -v",
-  "python scripts/verify_repository.py"
-]
+[package.repository]
+vcs = "git"
+url = "https://github.com/discrete-event-systems-test/contract-conformance-tests"
+
+[publish]
+include_readme = true
+tag_format = "v{version}"
+exclude = [".env", ".env.*", ".venv/**", ".vendor/**", "vendor/**", "artifacts/**", "**/__pycache__/**", "**/*.pyc", ".pytest_cache/**"]
+
+[install]
+dir = ".vendor/.zed"
+adapter = "none"
+
+[scripts]
+test = "PYTHONPATH=src python -m unittest discover -s tests -v && python scripts/verify_repository.py"
