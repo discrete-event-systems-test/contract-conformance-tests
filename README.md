@@ -13,4 +13,10 @@ python scripts/verify_repository.py
 
 The initial model is executable rather than a placeholder. Product adapters should be added through focused pull requests while preserving the reference-model tests as an oracle.
 
+The [FEL evidence gates](docs/fel-evidence-gates.md) add versioned benchmark
+fixtures, classified legacy-trace observations, bounded failure artifacts and
+telemetry, plus a shared read-only web/MCP projection contract. This is
+synthetic reference evidence; the production Rust and live transport adapters
+remain intentionally separate follow-up work.
+
 Tracking: https://github.com/ORESoftware/ai-agent-coordinator.rs/issues/139

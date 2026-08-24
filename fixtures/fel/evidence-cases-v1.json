@@ -1,0 +1,133 @@
+{
+  "contract_id": "fel-evidence-v1",
+  "differential_cases": [
+    {
+      "documented_policy_id": null,
+      "expected_classification": "equivalent",
+      "id": "stable-same-time-order",
+      "observed_legacy_trace": [
+        {"at": 10, "event_id": "alpha"},
+        {"at": 10, "event_id": "beta"}
+      ],
+      "oracle_trace": [
+        {"at": 10, "event_id": "alpha"},
+        {"at": 10, "event_id": "beta"}
+      ]
+    },
+    {
+      "documented_policy_id": "reschedule-gets-fresh-sequence",
+      "expected_classification": "intentional_policy_difference",
+      "id": "rescheduled-peer-order",
+      "observed_legacy_trace": [
+        {"at": 8, "event_id": "move-me"},
+        {"at": 8, "event_id": "peer"}
+      ],
+      "oracle_trace": [
+        {"at": 8, "event_id": "peer"},
+        {"at": 8, "event_id": "move-me"}
+      ]
+    },
+    {
+      "documented_policy_id": "negative-time-fails-closed",
+      "expected_classification": "intentional_policy_difference",
+      "id": "negative-time-policy",
+      "observed_legacy_trace": [
+        {"at": -1, "event_id": "legacy-negative"}
+      ],
+      "oracle_trace": []
+    },
+    {
+      "documented_policy_id": null,
+      "expected_classification": "not_observed",
+      "id": "legacy-cancellation-race-unavailable",
+      "observed_legacy_trace": null,
+      "oracle_trace": [
+        {"at": 4, "event_id": "winner"}
+      ]
+    }
+  ],
+  "limits": {
+    "allowed_attribute_keys": [
+      "model_id",
+      "outcome",
+      "run_id",
+      "simulation_id"
+    ],
+    "max_attribute_value_chars": 64,
+    "max_body_bytes": 512,
+    "max_concurrency": 2,
+    "max_events": 1024,
+    "max_output_bytes": 16384,
+    "max_trace_events": 48,
+    "operation_budget": 4096
+  },
+  "scenarios": [
+    {
+      "cancel_every": 0,
+      "fan_out": 0,
+      "fan_out_depth": 0,
+      "horizon": 100,
+      "id": "queue-depth",
+      "initial_events": 192,
+      "reschedule_every": 0,
+      "same_timestamp_burst": 1,
+      "seed": 1701
+    },
+    {
+      "cancel_every": 0,
+      "fan_out": 0,
+      "fan_out_depth": 0,
+      "horizon": 8,
+      "id": "event-rate",
+      "initial_events": 128,
+      "reschedule_every": 0,
+      "same_timestamp_burst": 16,
+      "seed": 1702
+    },
+    {
+      "cancel_every": 0,
+      "fan_out": 2,
+      "fan_out_depth": 2,
+      "horizon": 12,
+      "id": "fan-out",
+      "initial_events": 16,
+      "reschedule_every": 0,
+      "same_timestamp_burst": 4,
+      "seed": 1703
+    },
+    {
+      "cancel_every": 2,
+      "fan_out": 0,
+      "fan_out_depth": 0,
+      "horizon": 40,
+      "id": "cancellation-density",
+      "initial_events": 200,
+      "reschedule_every": 0,
+      "same_timestamp_burst": 8,
+      "seed": 1704
+    },
+    {
+      "cancel_every": 0,
+      "fan_out": 0,
+      "fan_out_depth": 0,
+      "horizon": 1000000,
+      "id": "long-horizon",
+      "initial_events": 64,
+      "reschedule_every": 0,
+      "same_timestamp_burst": 1,
+      "seed": 1705
+    },
+    {
+      "cancel_every": 0,
+      "fan_out": 0,
+      "fan_out_depth": 0,
+      "horizon": 0,
+      "id": "same-time-storm",
+      "initial_events": 256,
+      "reschedule_every": 5,
+      "same_timestamp_burst": 256,
+      "seed": 1706
+    }
+  ],
+  "schema_version": 1
+}
