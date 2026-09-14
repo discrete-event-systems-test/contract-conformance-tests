@@ -1,0 +1,35 @@
+name: current production contract tip
+on: {pull_request: {}, push: {branches: [main]}, workflow_dispatch: {}}
+permissions: {contents: read}
+jobs:
+  current-production-contracts:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env: {GH_TOKEN: "${{ secrets.TEST_FLEET_GITHUB_TOKEN || github.token }}"}
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with: {persist-credentials: false}
+      - name: Test 1 - current counterpart tips are reachable
+        shell: bash
+        run: |
+          set -euo pipefail; p="${GITHUB_REPOSITORY_OWNER%-test}"
+          gh api --paginate "orgs/$p/repos?per_page=100&type=all" --jq '.[]|select(.archived==false)|[.name,.default_branch]|@tsv' >/tmp/repos
+          test -s /tmp/repos || { echo "No counterpart repos visible; configure TEST_FLEET_GITHUB_TOKEN" >&2; exit 1; }
+          while IFS=$'\t' read -r r b; do s="$(gh api "repos/$p/$r/commits/$b" --jq .sha)"; [[ "$s" =~ ^[0-9a-f]{40}$ ]]; done </tmp/repos
+      - name: Test 2 - current contract or build authority exists
+        shell: bash
+        run: |
+          set -euo pipefail; p="${GITHUB_REPOSITORY_OWNER%-test}"; found=0; candidates=0
+          while IFS=$'\t' read -r r b; do
+            [[ "$r" =~ (interfaces|api|schema|contract|lib-core|infra) ]] || continue
+            candidates=$((candidates+1)); s="$(gh api "repos/$p/$r/commits/$b" --jq .sha)"
+            for marker in .zpkg.toml .ores-infra.toml Cargo.toml package.json pyproject.toml go.mod pubspec.yaml; do if gh api "repos/$p/$r/contents/$marker?ref=$s" >/dev/null 2>&1; then echo "authority: $p/$r@$s -> $marker"; found=1; break 2; fi; done
+            paths="$(gh api "repos/$p/$r/git/trees/$s?recursive=1" --jq '.tree[].path')"
+            if grep -Eq '(^|/)([^/]+\.tsp|[^/]+\.proto|[^/]+\.wit|openapi[^/]*\.(json|ya?ml)|[^/]*schema[^/]*\.json)$' <<<"$paths"; then found=1; break; fi
+          done </tmp/repos
+          if [[ "$found" -ne 1 ]]; then echo "No current contract/build authority found across $candidates candidate repositories; private counterparts require TEST_FLEET_GITHUB_TOKEN" >&2; fi
+          test "$candidates" -gt 0; test "$found" -eq 1
+      - name: Test 3 - zed-pkg dependency tip is reachable
+        shell: bash
+        run: |
+          set -euo pipefail; b="$(gh api repos/zed-pkg/zed-cli --jq .default_branch)"; s="$(gh api "repos/zed-pkg/zed-cli/commits/$b" --jq .sha)"; [[ "$s" =~ ^[0-9a-f]{40}$ ]]
