@@ -9,7 +9,7 @@ on:
 permissions: {contents: read}
 jobs:
   current-production-contracts:
-    uses: zed-pkg-test/.github/.github/workflows/reusable-explicit-counterpart-current-tips.yml@28da20bc67b963c084b6498102a153179b68f6c0
+    uses: zed-pkg-test/.github/.github/workflows/reusable-explicit-counterpart-current-tips.yml@a81a7ec0c12f3c21c669b66b078d3b33d3029829
     with:
       test_owner: discrete-event-systems-test
       test_owner_id: '313546124'
