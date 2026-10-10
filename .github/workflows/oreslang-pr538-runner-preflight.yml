@@ -1,0 +1,16 @@
+name: Oreslang PR538 runner preflight
+on:
+  push:
+    branches: [ci/oreslang-pr538-runner-preflight-20261010]
+permissions:
+  contents: read
+jobs:
+  actual-runner-check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Confirm GitHub-hosted runner allocation
+        run: |
+          echo 'ORESlANG_PR538_RUNNER_STARTED'
+          uname -a
+          java -version
